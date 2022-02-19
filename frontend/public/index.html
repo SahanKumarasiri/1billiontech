@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+    />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:400,600,700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/fonts/icomoon/style.css">
+
+    <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    
+    <!-- Style -->
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <script src="assets/js/jquery-3.3.1.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/jquery.sticky.js"></script>
+    <script src="assets/js/main.js"></script>
+
+    <title>Todo App</title>
+
+    <style>
+
+      /* Center the loader */
+     #loader {
+       position: absolute;
+       left: 50%;
+       top: 50%;
+       z-index: 1;
+       width: 50px;
+       height: 50px;
+       margin: -76px 0 0 -76px;
+       border: 16px solid #f3f3f3;
+       border-radius: 50%;
+       border-top: 16px solid gray;
+       -webkit-animation: spin 2s linear infinite;
+       animation: spin 2s linear infinite;
+     }
+   
+     @-webkit-keyframes spin {
+       0% { -webkit-transform: rotate(0deg); }
+       100% { -webkit-transform: rotate(360deg); }
+     }
+   
+     @keyframes spin {
+       0% { transform: rotate(0deg); }
+       100% { transform: rotate(360deg); }
+     }
+   
+     /* Add animation to "page content" */
+     .animate-bottom {
+       position: relative;
+       -webkit-animation-name: animatebottom;
+       -webkit-animation-duration: 1s;
+       animation-name: animatebottom;
+       animation-duration: 1s
+     }
+   
+     @-webkit-keyframes animatebottom {
+       from { bottom:-100px; opacity:0 } 
+       to { bottom:0px; opacity:1 }
+     }
+   
+     @keyframes animatebottom { 
+       from{ bottom:-100px; opacity:0 } 
+       to{ bottom:0; opacity:1 }
+     }
+     </style>
+  </head>
+  <body onload="myFunction()">
+    <div id="loader"></div>
+    <div id="root"></div>
+    <script>
+      var myVar;
+      
+      function myFunction() {
+        myVar = setTimeout(showPage, 1000);
+      }
+      
+      function showPage() {
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("myDiv").style.display = "block";
+      }
+    </script>
+
+
+  </body>
+</html>

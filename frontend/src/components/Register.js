@@ -23,9 +23,14 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); //additional
+  const [isError, setIsError] = useState(false);
 
   const registerHandler = async (e) => {
     e.preventDefault();
+
+    setLoading(true);
+    setIsError(false); //additional
 
     const config = {
       headers: {
@@ -36,6 +41,8 @@ const Register = () => {
     if (password !== confirmpassword) {
       setPassword("");
       setConfirmPassword("");
+      setLoading(false);
+      setIsError(true);
       setTimeout(() => {
         setError("");
       }, 5000);
@@ -52,9 +59,14 @@ const Register = () => {
 
       localStorage.setItem("authToken", data.token);
 
-      history("/login");
+      setTimeout(() => {
+        setLoading(false);
+        history("/login");
+      }, 5000); //5s
     } catch (error) {
       setError(error.response.data.error);
+      setLoading(false);
+      setIsError(true);
       setTimeout(() => {
         setError("");
       }, 5000); //5s
@@ -179,14 +191,22 @@ const Register = () => {
                 value={confirmpassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
+              {isError && (
+                <small className="mt-3 d-inline-block text-danger">
+                  Something went wrong. Please try again later.
+                </small>
+              )}
+              {/*decision*/}
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                disabled={loading}
               >
                 <span>
-                  <i className="fa fa-user-plus" aria-hidden="true"></i> Sign Up
+                  <i className="fa fa-user-plus" aria-hidden="true"></i>{" "}
+                  {loading ? "Registering in Progress..." : "Sign Up"}
                 </span>
               </Button>
               <Grid container>

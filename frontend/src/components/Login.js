@@ -22,6 +22,8 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [available, setAvailable] = useState("");
+  const [loading, setLoading] = useState(false); //additional
+  const [isError, setIsError] = useState(false);
 
   const history = useNavigate();
 
@@ -34,6 +36,9 @@ const Login = () => {
 
   const loginHandler = async (e) => {
     e.preventDefault();
+
+    setLoading(true);
+    setIsError(false); //additional
 
     const config = {
       headers: {
@@ -50,10 +55,15 @@ const Login = () => {
 
       localStorage.setItem("authToken", data.token);
 
-      history("/dashboard");
+      setTimeout(() => {
+        setLoading(false);
+        history("/dashboard");
+      }, 5000);
     } catch (error) {
       setError(error.response.data.error);
       setAvailable(error.response.data.available);
+      setLoading(false);
+      setIsError(true);
       setTimeout(() => {
         setError("");
         setAvailable("");
@@ -160,15 +170,21 @@ const Login = () => {
                 <i class="fa fa-rss" aria-hidden="true"></i>
               </label>
               <br />
-
+              {isError && (
+                <small className="mt-3 d-inline-block text-danger">
+                  Something went wrong. Please try again later.
+                </small>
+              )}
+              {/*decision*/}
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                disabled={loading}
               >
                 <span>
-                  <i className="fa fa-sign-in" aria-hidden="true"></i> Sign In
+                  <i className="fa fa-sign-in" aria-hidden="true"></i> {loading ? 'Authenticating...' : 'Sign In'}
                 </span>
               </Button>
               <Grid container>

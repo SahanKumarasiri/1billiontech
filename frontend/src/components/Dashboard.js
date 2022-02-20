@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import NavBar from "./NavBar";
 
 const Dashboard = () => {
   const history = useNavigate();
@@ -16,8 +17,11 @@ const Dashboard = () => {
   };
   return (
     <div>
-      Dashboard
-      <button onClick={logoutHandler} style={{color:"white"}}> Logout</button>
+      <NavBar />
+      <button onClick={logoutHandler} style={{ color: "white" }}>
+        {" "}
+        Logout
+      </button>
     </div>
   );
 };

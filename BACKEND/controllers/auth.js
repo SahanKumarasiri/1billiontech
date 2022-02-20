@@ -146,5 +146,7 @@ exports.resetpassword = async (req, res) => {
 
 const sendToken = (user , statusCode , res)=>{ //JWT get
     const token = user.getSignedToken();
-    res.status(200).json({success:true , token});
+    const username = user.username;
+    const email = user.email;
+    res.status(200).json({success:true , token , username , email});
 }

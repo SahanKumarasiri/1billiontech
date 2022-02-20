@@ -58,6 +58,8 @@ const Register = () => {
       );
 
       localStorage.setItem("authToken", data.token);
+      localStorage.setItem("email", data.email);
+      localStorage.setItem("username", data.username);
 
       setTimeout(() => {
         setLoading(false);

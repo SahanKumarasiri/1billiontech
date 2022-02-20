@@ -1,8 +1,13 @@
 import React from "react";
 import "./Home.scss";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const history = useNavigate();
+  const onClick = () => {
+    history(`/dashboard/${localStorage.getItem("username")}/create`);
+    window.location.reload();
+  };
   return (
     <>
       <div className="site-mobile-menu site-navbar-target">
@@ -55,11 +60,12 @@ const Home = () => {
             <div className="right-cta-menu text-right d-flex aligin-items-center col-6">
               <div className="ml-auto">
                 <NavLink
-                  to="/create"
+                  to={`/dashboard/${localStorage.getItem("username")}/create`}
                   className="btn btn-outline-white border-width-2 d-none d-lg-inline-block"
+                  onClick={onClick}
                 >
                   <span className="mr-2 icon-add"></span>Create a Todo
-                </NavLink>
+                </NavLink>{" "}
                 <NavLink
                   to="/login"
                   className="btn btn-primary border-width-2 d-none d-lg-inline-block"

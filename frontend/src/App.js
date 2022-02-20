@@ -10,6 +10,10 @@ import Register from "./components/Register";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import Dashboard from "./components/Dashboard";
+import NavBar from "./components/NavBar";
+import CreateTodo from "./components/CreateTodo";
+import Profile from "./components/Profile";
+import ResolveTodos from "./components/ResolveTodos";
 
 const App = () => {
   // The back-to-top button is hidden at the beginning
@@ -45,10 +49,38 @@ const App = () => {
             element={<ResetPassword />}
           />
           <Route
-            path="/dashboard"
+            path="/dashboard/:name"
             element={
               <PrivateRoute>
+                <NavBar />
                 <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/dashboard/:name/create"
+            element={
+              <PrivateRoute>
+                <NavBar />
+                <CreateTodo />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/dashboard/:name/profile"
+            element={
+              <PrivateRoute>
+                <NavBar />
+                <Profile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/dashboard/:name/resolve"
+            element={
+              <PrivateRoute>
+                <NavBar />
+                <ResolveTodos />
               </PrivateRoute>
             }
           />

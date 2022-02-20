@@ -30,7 +30,25 @@ const Login = () => {
   useEffect(() => {
     if (localStorage.getItem("authToken")) {
       //push a user if he already logged in
-      history("/dashboard");
+      if (
+        window.confirm(
+          "You are already logged in ! Are you sure you want to proceed?"
+        )
+      ) {
+        history(`/dashboard/${localStorage.getItem("username")}`);
+        window.location.reload();
+      } else {
+        if (window.confirm("Do you need to signout ?")) {
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("username");
+          localStorage.removeItem("email");
+          history("/login");
+          alert("You are successfully signed out");
+        } else {
+          history(`/dashboard/${localStorage.getItem("username")}`);
+          window.location.reload();
+        }
+      }
     }
   }, []);
 
@@ -54,10 +72,13 @@ const Login = () => {
       );
 
       localStorage.setItem("authToken", data.token);
+      localStorage.setItem("username", data.username);
+      localStorage.setItem("email", data.email);
 
       setTimeout(() => {
         setLoading(false);
-        history("/dashboard");
+        history(`/dashboard/${data.username}`);
+        window.location.reload();
       }, 5000);
     } catch (error) {
       setError(error.response.data.error);
@@ -184,7 +205,8 @@ const Login = () => {
                 disabled={loading}
               >
                 <span>
-                  <i className="fa fa-sign-in" aria-hidden="true"></i> {loading ? 'Authenticating...' : 'Sign In'}
+                  <i className="fa fa-sign-in" aria-hidden="true"></i>{" "}
+                  {loading ? "Authenticating..." : "Sign In"}
                 </span>
               </Button>
               <Grid container>

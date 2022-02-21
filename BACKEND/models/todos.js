@@ -4,15 +4,21 @@ const Schema = mongoose.Schema;
 const Todo = new Schema({
   todo: {
     type: String,
-    required: true,
   },
   plannedDate: {
-    type: Date,
-    required: true,
+    type: String,
   },
   dateCreated: {
-    type: Date,
-    required: true,
+    type: String,
+  },
+  dateModified: {
+    type: String,
+  },
+  email: {
+    type: String, 
+  },
+  resolved: {
+    type: Boolean,
   },
 });
 

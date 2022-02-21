@@ -4,9 +4,17 @@ const res = require("express/lib/response");
 const Todos = require("../models/todos");
 
 router.route("/create").post(async (req, res) => {
-  const { todo, plannedDate, dateCreated } = req.body;
+  const { todo, email, plannedDate, dateCreated , dateModified} = req.body;
+  const resolved = Boolean(req.body.resolved);
 
-  const newTodo = new Todos({ todo, plannedDate, dateCreated });
+  const newTodo = new Todos({
+    todo,
+    plannedDate,
+    dateCreated,
+    dateModified,
+    email,
+    resolved,
+  });
 
   await newTodo
     .save()
@@ -37,9 +45,20 @@ router.route("/delete/:id").delete(async (req, res) => {
 });
 
 router.route("/update/:id").put(async (req, res) => {
+  //backend route for updating relavant data and passing back
   const { id } = req.params;
+  const { todo, plannedDate, dateModified } = req.body;
 
-  await Todos.findByIdAndUpdate(id)
+  await Todos.findByIdAndUpdate(id, { todo, plannedDate, dateModified }) //find the document by and update the relavant data
+    .then(() => res.json({ success: true }))
+    .catch((error) => res.json({ success: false, Error: error }));
+});
+
+router.route("/resolve/:id").put(async (req, res) => {
+  const { id } = req.params;
+  const resolved = Boolean(req.body.resolved);
+
+  await Todos.findByIdAndUpdate(id, { resolved })
     .then(() => res.json({ message: "Successfully Updated" }))
     .catch((error) => res.status(500).json({ success: false, error: error }));
 });

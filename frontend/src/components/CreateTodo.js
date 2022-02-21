@@ -4,14 +4,106 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 import React, { useState } from "react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify"; //for toast messages
+import "react-toastify/dist/ReactToastify.css";
 
 import "./Button.css";
 
 const CreateTodo = () => {
+  var m_names = new Array( //get date for the database saving
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  );
+
+  var today = new Date();
+  var curr_date = today.getDate();
+  var curr_month = today.getMonth();
+  var curr_year = today.getFullYear();
+  var hour = today.getHours();
+  var min = today.getMinutes();
+
+  today =
+    m_names[curr_month] +
+    " " +
+    curr_date +
+    "/ " +
+    curr_year +
+    " " +
+    hour +
+    " : " +
+    min;
+
   const [value, setValue] = useState(new Date());
+  const [todo, setTodo] = useState("");
+  const resolved = false;
+  const dateCreated = today;
+  const dateModified = "No Mofification";
+  const email = localStorage.getItem("email");
+
+  const [loading, setLoading] = useState(false); //additional
+
+  var plan_date = value.getDate();
+  var plan_month = value.getMonth();
+  var plan_year = value.getFullYear();
+
+  const checkingDate = plan_date + "-" + (plan_month + 1) + "-" + plan_year;
+  const [plannedDate, setPlannedDate] = useState(value);
+
+  const createTodoHandler = async (e) => {
+    e.preventDefault();
+
+    setLoading(true);
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      await axios.post(
+        "/1billiontech/create",
+        {
+          todo,
+          plannedDate,
+          dateCreated,
+          dateModified,
+          resolved,
+          email,
+          checkingDate,
+        },
+        config
+      );
+
+      setTimeout(() => {
+        setLoading(false);
+        toast("Success! Todo Planned 😘");
+        setValue(new Date());
+        setTodo("");
+        window.location.reload();
+      }, 5000);
+    } catch (error) {
+      alert(error.response.data.error);
+      setValue(new Date());
+      setTodo("");
+      setLoading(false);
+    }
+  };
 
   const handleChange = (newValue) => {
     setValue(newValue);
+    setPlannedDate(newValue);
   };
 
   return (
@@ -37,91 +129,109 @@ const CreateTodo = () => {
         </div>
       </header>
       <main>
-        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          <div className="px-4 py-6 sm:px-0">
-            <div className="border-4 border-dashed border-gray-200 rounded-lg h-96">
-              <center>
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <h1 style={{ color: "white", fontSize: "40px" }}>
-                  <i className="fa fa-plus" aria-hidden="true"></i> Plan Your
-                  Future
-                </h1>
-                <br />
+        <form onSubmit={createTodoHandler}>
+          <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <div className="px-4 py-6 sm:px-0">
+              <div className="border-4 border-dashed border-gray-200 rounded-lg h-96">
+                <center>
+                  <br />
+                  <br />
+                  <br />
+                  <br />
+                  <br />
+                  <h1 style={{ color: "white", fontSize: "40px" }}>
+                    <i className="fa fa-plus" aria-hidden="true"></i> Plan Your
+                    Future
+                  </h1>
+                  <br />
 
-                <div
-                  style={{
-                    display: "inline-flex",
-                    justifyContent: "space-around",
-                  }}
-                  className="container"
-                >
-                  <div>
-                    <TextField
-                      id="filled-basic"
-                      label="Write your work 😘"
-                      variant="filled"
-                      InputLabelProps={{
-                        sx: {
-                          // set the color of the label when not shrinked
-                          color: "green",
-                        },
-                      }}
-                      inputProps={{
-                        sx: {
-                          // set the color of the label when not shrinked
-                          color: "white",
-                        },
-                      }}
-                    />
+                  <div
+                    style={{
+                      display: "inline-flex",
+                      justifyContent: "space-around",
+                    }}
+                    className="container"
+                  >
+                    <div>
+                      <TextField
+                        id="filled-basic"
+                        label="Write your work 😘"
+                        variant="filled"
+                        InputLabelProps={{
+                          sx: {
+                            // set the color of the label when not shrinked
+                            color: "green",
+                          },
+                        }}
+                        inputProps={{
+                          sx: {
+                            // set the color of the label when not shrinked
+                            color: "white",
+                          },
+                        }}
+                        value={todo}
+                        onChange={(e) => setTodo(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <span style={{ color: "yellow" }}>
+                        When you wish to do it 🤔
+                      </span>
+                    </div>
+                    <div>
+                      <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <Stack spacing={3}>
+                          <div style={{ width: "100%" }}>
+                            <DesktopDatePicker
+                              inputFormat="dd/MM/yyyy"
+                              inputProps={{
+                                sx: {
+                                  // set the color of the label when not shrinked
+                                  color: "white",
+                                },
+                                readOnly: true,
+                              }}
+                              value={value}
+                              onChange={handleChange}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  sx={{
+                                    svg: { color: "#ffffff" },
+                                    inpt: { color: "#ffffff" },
+                                    label: { color: "#ffffff" },
+                                  }}
+                                />
+                              )}
+                              required
+                            />
+                          </div>
+                        </Stack>
+                      </LocalizationProvider>
+                    </div>
                   </div>
-                  <div>
-                    <span style={{ color: "yellow" }}>
-                      When you wish to do it 🤔
-                    </span>
-                  </div>
-                  <div>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <Stack spacing={3}>
-                        <div style={{ width: "100%" }}>
-                          <DesktopDatePicker
-                            inputFormat="MM/dd/yyyy"
-                            inputProps={{
-                              sx: {
-                                // set the color of the label when not shrinked
-                                color: "white",
-                              },
-                            }}
-                            value={value}
-                            onChange={handleChange}
-                            renderInput={(params) => <TextField {...params} />}
-                          />
-                        </div>
-                      </Stack>
-                    </LocalizationProvider>
-                  </div>
-                </div>
-                <a href="#" class="animated-button1">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <i className="fa fa-cogs" aria-hidden="true"></i> Create
-                </a>
-              </center>
+                  <button className="animated-button1" disabled={loading}>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <i className="fa fa-cogs" aria-hidden="true"></i>{" "}
+                    {loading ? "Planning in Progess..." : "Create"}
+                  </button>
+                  <ToastContainer style={{ marginTop: "50px" }} />
+                </center>
+              </div>
             </div>
+            <center>
+              <span style={{ color: "white" }}>{"Copyright © "}</span>
+              <span style={{ color: "red" }}>Sahan Kumarasiri</span>
+              <span style={{ color: "white" }}>
+                {" " + new Date().getFullYear() + " . "}
+              </span>
+            </center>
           </div>
-          <center>
-            <span style={{ color: "white" }}>{"Copyright © "}</span>
-            <span style={{ color: "red" }}>Sahan Kumarasiri</span>
-            <span style={{ color: "white" }}>
-              {" " + new Date().getFullYear() + " . "}
-            </span>
-          </center>
-        </div>
+        </form>
       </main>
     </div>
   );

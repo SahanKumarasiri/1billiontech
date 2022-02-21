@@ -67,6 +67,12 @@ const NavBar = () => {
               <i className="fa fa-check-circle" aria-hidden="true"></i> Resolved
             </NavLink>
             <NavLink
+              to={`/dashboard/${localStorage.getItem("username")}/outdated`}
+              className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+            >
+              <i class="fa fa-question-circle" aria-hidden="true"></i> Outdated
+            </NavLink>
+            <NavLink
               to={`/dashboard/${localStorage.getItem("username")}/profile`}
               className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
             >

@@ -14,6 +14,8 @@ import NavBar from "./components/NavBar";
 import CreateTodo from "./components/CreateTodo";
 import Profile from "./components/Profile";
 import ResolveTodos from "./components/ResolveTodos";
+import OutdatedTodos from "./components/OutdatedTodos";
+import ViewTodo from "./components/ViewTodo";
 
 const App = () => {
   // The back-to-top button is hidden at the beginning
@@ -81,6 +83,24 @@ const App = () => {
               <PrivateRoute>
                 <NavBar />
                 <ResolveTodos />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/dashboard/:name/outdated"
+            element={
+              <PrivateRoute>
+                <NavBar />
+                <OutdatedTodos />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/dashboard/:name/view/:type/:id"
+            element={
+              <PrivateRoute>
+                <NavBar />
+                <ViewTodo />
               </PrivateRoute>
             }
           />

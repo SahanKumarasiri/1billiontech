@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const ResolveTodos = () => {
+const OutdatedTodos = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -23,6 +23,8 @@ const ResolveTodos = () => {
     "Friday",
     "Saturday"
   );
+
+  var date = new Date();
 
   var filteredData = data.filter(
     (el) => el.email.indexOf(localStorage.getItem("email")) >= 0
@@ -62,7 +64,7 @@ const ResolveTodos = () => {
             className="text-3xl font-bold text-gray-900"
             style={{ color: "#f4f4f4", fontFamily: "cursive" }}
           >
-            Resolved Todos 👌
+            Outdated Todos ☹️
           </h1>
         </div>
       </header>
@@ -115,15 +117,23 @@ const ResolveTodos = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredData.length === 0 ? (
                     <center>
-                      <h1 style={{ color: "red" }}>No resolved todos 😒 </h1>
+                      <h1 style={{ color: "red" }}>No outdated todos 😒 </h1>
                     </center>
                   ) : (
                     filteredData.map((value) => {
+                      const compareDate = new Date(value.plannedDate);
                       if (
-                        value.resolved === true &&
-                        value.email === localStorage.getItem("email")
+                        value.resolved === false &&
+                        value.email === localStorage.getItem("email") &&
+                        date.getFullYear() >= compareDate.getFullYear() &&
+                        !(
+                          !(
+                            date.getMonth() >= compareDate.getMonth() &&
+                            date.getDate() !== compareDate.getDate() &&
+                            date.getDate() > compareDate.getDate()
+                          ) && date.getMonth() <= compareDate.getMonth()
+                        )
                       ) {
-                        const compareDate = new Date(value.plannedDate);
                         const newStringDate =
                           m_names[compareDate.getDay()] +
                           " " +
@@ -131,7 +141,9 @@ const ResolveTodos = () => {
                           "-" +
                           (compareDate.getMonth() + 1) +
                           "-" +
-                          compareDate.getFullYear();
+                          compareDate.getFullYear() +
+                          " at " +
+                          compareDate.getHours();
                         return (
                           <tr key={value._id}>
                             <td className="px-6 py-4 whitespace-nowrap">
@@ -145,11 +157,11 @@ const ResolveTodos = () => {
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-500 text-white">
+                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-500 text-white">
                                 {" "}
-                                Resolved&nbsp;
+                                Outdated&nbsp;
                                 <i
-                                  className="fa fa-check-circle"
+                                  className="fa fa-times-circle"
                                   aria-hidden="true"
                                 ></i>
                               </span>
@@ -159,7 +171,7 @@ const ResolveTodos = () => {
                                 Created : {value.dateCreated}
                               </div>
                               <div className="text-sm text-gray-500">
-                                Resolved Date : {value.dateModified}
+                                Modified Date : {value.dateModified}
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -194,4 +206,4 @@ const ResolveTodos = () => {
   );
 };
 
-export default ResolveTodos;
+export default OutdatedTodos;

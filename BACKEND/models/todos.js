@@ -20,6 +20,9 @@ const Todo = new Schema({
   resolved: {
     type: Boolean,
   },
+  checkingDate:{
+    type:String
+  }
 });
 
 const newTodo = mongoose.model("todo", Todo);

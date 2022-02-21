@@ -15,7 +15,7 @@ exports.register = async (req, res) => {
     sendToken(user, 200, res);
   } catch (error) {
     if (error.code === 11000) {
-      const message = "Duplicate Field Value Enter ";
+      const message = "Already have an account using this email ";
       return res.status(400).json({ success: false, error: message });
     }
 

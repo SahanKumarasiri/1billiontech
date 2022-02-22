@@ -55,7 +55,7 @@ export default function Profile() {
         <br />
 
         <span style={{ color: "white" }}>{"Copyright © "}</span>
-        <span style={{ color: "red" }}>Sahan Kumarasiri</span>
+        <span style={{ color: "lightcoral" }}>Sahan Kumarasiri</span>
         <span style={{ color: "white" }}>
           {" " + new Date().getFullYear() + " . "}
         </span>

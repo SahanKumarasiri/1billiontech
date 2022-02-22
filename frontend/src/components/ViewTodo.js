@@ -4,7 +4,7 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import "./Button.css";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 export default function ViewTodo() {
@@ -125,11 +125,15 @@ export default function ViewTodo() {
               }}
               onClick={() => deleteTodo(id)}
             ></i>{" "}
-            <i
-              className="fa fa-pencil"
-              aria-hidden="true"
-              style={{ color: "green", fontSize: "20px" }}
-            ></i>
+            <Link
+              to={`/dashboard/${localStorage.getItem("username")}/edit/${id}`}
+            >
+              <i
+                className="fa fa-pencil"
+                aria-hidden="true"
+                style={{ color: "green", fontSize: "20px" }}
+              ></i>
+            </Link>
             <br />
             <button onClick={() => markAsResolved(id)}>
               <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-500 text-white">
@@ -144,7 +148,7 @@ export default function ViewTodo() {
         <br />
 
         <span style={{ color: "white" }}>{"Copyright © "}</span>
-        <span style={{ color: "red" }}>Sahan Kumarasiri</span>
+        <span style={{ color: "lightcoral" }}>Sahan Kumarasiri</span>
         <span style={{ color: "white" }}>
           {" " + new Date().getFullYear() + " . "}
         </span>

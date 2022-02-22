@@ -2,17 +2,27 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const ResolveTodos = () => {
-  const [data, setData] = useState([]);
+  const [filteredDataResolved, setFilteredDataResolved] = useState([]);
 
   useEffect(() => {
     const getData = async () => {
       await axios
         .get("/1billiontech/")
-        .then((res) => setData(res.data))
+        .then((res) => {
+          setFilteredDataResolved(
+            res.data
+              .sort((a, b) => (a.plannedDate > b.plannedDate ? 1 : -1))
+              .filter(
+                (el) =>
+                  el.email.indexOf(localStorage.getItem("email")) >= 0 &&
+                  el.resolved === true
+              )
+          );
+        })
         .catch((error) => alert(error));
     };
     getData();
-  });
+  }, []);
 
   var m_names = new Array(
     "Sunday",
@@ -24,24 +34,16 @@ const ResolveTodos = () => {
     "Saturday"
   );
 
-  var filteredData = data.filter(
-    (el) => el.email.indexOf(localStorage.getItem("email")) >= 0
-  );
-
-  const changeOrder = async () => {
-    if (window.confirm("Hello")) {
-      filteredData = data.filter((el) => el.todo.indexOf("sdfdsf"));
-    }
-  };
-
   const deleteTodo = async (id) => {
     if (window.confirm("Do you want to delete !")) {
       await axios.delete(`/1billiontech/delete/${id}`);
       await axios
         .get("/1billiontech/")
-        .then((res) => setData(res.data))
+        .then((res) => {
+          setFilteredDataResolved(res.data.filter((el) => el.todo !== id));
+          window.location.reload();
+        })
         .catch((error) => alert(error));
-      filteredData = data.filter((el) => el.todo !== id);
     }
   };
 
@@ -79,15 +81,6 @@ const ResolveTodos = () => {
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       To Do{" "}
-                      <label
-                        for="order"
-                        style={{ textTransform: "lowercase", color: "red" }}
-                      >
-                        Sort By :
-                      </label>
-                      <button value="date" onClick={changeOrder}>
-                        Date
-                      </button>
                     </th>
                     <th
                       scope="col"
@@ -113,12 +106,12 @@ const ResolveTodos = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredData.length === 0 ? (
+                  {filteredDataResolved.length === 0 ? (
                     <center>
-                      <h1 style={{ color: "red" }}>No resolved todos 😒 </h1>
+                      <h1 style={{ color: "red" }}>Empty Resolved Box 😒 </h1>
                     </center>
                   ) : (
-                    filteredData.map((value) => {
+                    filteredDataResolved.map((value) => {
                       if (
                         value.resolved === true &&
                         value.email === localStorage.getItem("email")
@@ -190,6 +183,17 @@ const ResolveTodos = () => {
           </div>
         </div>
       </div>
+      <center>
+        <br />
+        <br />
+        <div>
+          <span style={{ color: "white" }}>{"Copyright © "}</span>
+          <span style={{ color: "lightcoral" }}>Sahan Kumarasiri</span>
+          <span style={{ color: "white" }}>
+            {" " + new Date().getFullYear() + " . "}
+          </span>
+        </div>
+      </center>
     </>
   );
 };

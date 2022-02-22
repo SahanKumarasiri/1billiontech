@@ -4,16 +4,10 @@ import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const [data, setData] = useState([]);
-
-  useEffect(() => {
-    const getData = async () => {
-      await axios
-        .get("/1billiontech/")
-        .then((res) => setData(res.data))
-        .catch((error) => alert(error));
-    };
-    getData();
-  });
+  const [filteredDataToday, setFilteredDataToday] = useState([]);
+  const [filteredDataUpcomming, setFilteredDataUpcomming] = useState([]);
+  const [isClicked, setIsClicked] = useState(false);
+  const [initialClickedStatus, setInitialClickedStatus] = useState(false);
 
   var m_names = new Array(
     "Sunday",
@@ -33,17 +27,106 @@ const Dashboard = () => {
 
   const today = plan_date + "-" + (plan_month + 1) + "-" + plan_year;
 
-  var filteredData = data.filter(
-    (el) => el.email.indexOf(localStorage.getItem("email")) >= 0
-  );
+  useEffect(() => {
+    const getData = async () => {
+      await axios
+        .get("/1billiontech/")
+        .then((res) => {
+          setData(res.data);
+          setFilteredDataToday(
+            res.data.filter(
+              (el) =>
+                el.email.indexOf(localStorage.getItem("email")) >= 0 &&
+                el.resolved === false &&
+                el.checkingDate.indexOf(today) >= 0
+            )
+          );
+          setFilteredDataUpcomming(
+            res.data.filter(
+              (el) =>
+                el.resolved === false &&
+                el.email === localStorage.getItem("email") &&
+                today !== el.checkingDate &&
+                date.getFullYear() >= new Date(el.plannedDate).getFullYear() &&
+                !(
+                  date.getMonth() >= new Date(el.plannedDate).getMonth() &&
+                  date.getDate() !== new Date(el.plannedDate).getDate() &&
+                  date.getDate() > new Date(el.plannedDate).getDate()
+                ) &&
+                date.getMonth() <= new Date(el.plannedDate).getMonth()
+            )
+          );
+        })
+        .catch((error) => alert(error));
+    };
+    getData();
+  }, []);
 
-  const changeOrder = async () => {
-    if (window.confirm("Hello")) {
-      filteredData = data.filter((el) => el.todo.indexOf("sdfdsf"));
+  const sortByDate = () => {
+    setInitialClickedStatus(true);
+    setIsClicked(!isClicked);
+    if (!isClicked) {
+      setFilteredDataToday(
+        data
+          .sort((a, b) => (a.plannedDate > b.plannedDate ? 1 : -1))
+          .filter(
+            (el) =>
+              el.email.indexOf(localStorage.getItem("email")) >= 0 &&
+              el.resolved === false &&
+              el.checkingDate.indexOf(today) >= 0
+          )
+      );
+      setFilteredDataUpcomming(
+        data
+          .sort((a, b) => (a.plannedDate > b.plannedDate ? 1 : -1))
+          .filter(
+            (el) =>
+              el.resolved === false &&
+              el.email === localStorage.getItem("email") &&
+              today !== el.checkingDate &&
+              date.getFullYear() >= new Date(el.plannedDate).getFullYear() &&
+              !(
+                date.getMonth() >= new Date(el.plannedDate).getMonth() &&
+                date.getDate() !== new Date(el.plannedDate).getDate() &&
+                date.getDate() > new Date(el.plannedDate).getDate()
+              ) &&
+              date.getMonth() <= new Date(el.plannedDate).getMonth()
+          )
+      );
+      setIsClicked(true);
+    } else {
+      setFilteredDataToday(
+        data
+          .sort((a, b) => (b.plannedDate > a.plannedDate ? 1 : -1))
+          .filter(
+            (el) =>
+              el.email.indexOf(localStorage.getItem("email")) >= 0 &&
+              el.resolved === false &&
+              el.checkingDate.indexOf(today) >= 0
+          )
+      );
+      setFilteredDataUpcomming(
+        data
+          .sort((a, b) => (b.plannedDate > a.plannedDate ? 1 : -1))
+          .filter(
+            (el) =>
+              el.resolved === false &&
+              el.email === localStorage.getItem("email") &&
+              today !== el.checkingDate &&
+              date.getFullYear() >= new Date(el.plannedDate).getFullYear() &&
+              !(
+                date.getMonth() >= new Date(el.plannedDate).getMonth() &&
+                date.getDate() !== new Date(el.plannedDate).getDate() &&
+                date.getDate() > new Date(el.plannedDate).getDate()
+              ) &&
+              date.getMonth() <= new Date(el.plannedDate).getMonth()
+          )
+      );
+      setIsClicked(!isClicked);
     }
   };
 
-  const markAsResolved = async (id) => {
+  const markAsResolved = async (id, type) => {
     const resolved = true;
     const dateModified =
       today + " at " + date.getHours() + " : " + date.getMinutes();
@@ -54,23 +137,38 @@ const Dashboard = () => {
       });
       await axios
         .get("/1billiontech/")
-        .then((res) => setData(res.data))
+        .then((res) => {
+          setData(res.data);
+          if (type === "today") {
+            setFilteredDataToday(res.data.filter((el) => el.todo !== id));
+            window.location.reload();
+          } else {
+            setFilteredDataUpcomming(res.data.filter((el) => el.todo !== id));
+            window.location.reload();
+          }
+        })
         .catch((error) => alert(error));
-      filteredData = data.filter((el) => el.todo !== id);
     }
   };
 
-  const deleteTodo = async (id) => {
+  const deleteTodo = async (id, type) => {
     if (window.confirm("Do you want to delete !")) {
       await axios.delete(`/1billiontech/delete/${id}`);
       await axios
         .get("/1billiontech/")
-        .then((res) => setData(res.data))
+        .then((res) => {
+          setData(res.data);
+          if (type === "today") {
+            setFilteredDataToday(res.data.filter((el) => el.todo !== id));
+            window.location.reload();
+          } else {
+            setFilteredDataUpcomming(res.data.filter((el) => el.todo !== id));
+            window.location.reload();
+          }
+        })
         .catch((error) => alert(error));
-      filteredData = data.filter((el) => el.todo !== id);
     }
   };
-
   return (
     <>
       <header
@@ -110,11 +208,14 @@ const Dashboard = () => {
                         for="order"
                         style={{ textTransform: "lowercase", color: "red" }}
                       >
-                        Sort By :
+                        Change :
                       </label>
-                      <button value="date" onClick={changeOrder}>
-                        Date
-                      </button>
+                      <input
+                        type="submit"
+                        value={isClicked === false ? "Date ASC" : "Date DESC"}
+                        onClick={sortByDate}
+                        className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-500 text-white"
+                      />
                     </th>
                     <th
                       scope="col"
@@ -134,18 +235,29 @@ const Dashboard = () => {
                     >
                       Description
                     </th>
-                    <th scope="col" className="relative px-6 py-3">
-                      <span className="sr-only">Edit</span>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider"
+                    >
+                      <i className="fa fa-info-circle" aria-hidden="true"></i>
+                      &nbsp;
+                      {initialClickedStatus === false
+                        ? "Intially Sorted In No Ordering"
+                        : isClicked === false
+                        ? "You set the order to DECENDING"
+                        : "You set the order to ACENDING"}
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredData.length === 0 ? (
+                  {filteredDataToday.length === 0 ? (
                     <center>
-                      <h1 style={{ color: "red" }}>No planning to do 😒 </h1>
+                      <h1 style={{ color: "red" }}>
+                        Oops.. You don't have a plan today 😒{" "}
+                      </h1>
                     </center>
                   ) : (
-                    filteredData.map((value) => {
+                    filteredDataToday.map((value) => {
                       if (
                         value.resolved === false &&
                         value.email === localStorage.getItem("email") &&
@@ -164,13 +276,25 @@ const Dashboard = () => {
                         return (
                           <tr key={value._id}>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-teal-500">
+                              <div
+                                className="text-sm text-teal-600"
+                                style={{
+                                  display: "inline-flex",
+                                  justifyContent: "space-around",
+                                }}
+                              >
                                 <Link
                                   to={`/dashboard/${localStorage.getItem(
                                     "username"
                                   )}/view/${"Today"}/${value._id}`}
                                 >
-                                  {value.todo} <i className="fa fa-eye" aria-hidden="true"></i>
+                                  <div>{value.todo} </div>
+                                  <div>
+                                    <i
+                                      className="fa fa-eye"
+                                      aria-hidden="true"
+                                    ></i>
+                                  </div>
                                 </Link>
                               </div>
                             </td>
@@ -182,9 +306,19 @@ const Dashboard = () => {
                             <td className="px-6 py-4 whitespace-nowrap">
                               <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                 {" "}
-                                Active{" "}
-                              </span>&nbsp;
-                              <button onClick={() => markAsResolved(value._id)}>
+                                Active&nbsp;
+                                <i
+                                  className="fa fa-circle"
+                                  aria-hidden="true"
+                                  style={{ color: "red" }}
+                                ></i>
+                              </span>
+                              &nbsp;
+                              <button
+                                onClick={() =>
+                                  markAsResolved(value._id, "today")
+                                }
+                              >
                                 <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-500 text-white">
                                   Mark as Resolved&nbsp;
                                   <i
@@ -203,10 +337,7 @@ const Dashboard = () => {
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                              <a
-                                href="#"
-                                className="text-indigo-600 hover:text-indigo-900"
-                              >
+                              <a className="text-indigo-600 hover:text-indigo-900">
                                 <i
                                   className="fa fa-trash"
                                   aria-hidden="true"
@@ -215,13 +346,19 @@ const Dashboard = () => {
                                     fontSize: "20px",
                                     marginRight: "20px",
                                   }}
-                                  onClick={() => deleteTodo(value._id)}
+                                  onClick={() => deleteTodo(value._id, "today")}
                                 ></i>{" "}
-                                <i
-                                  className="fa fa-pencil"
-                                  aria-hidden="true"
-                                  style={{ color: "green", fontSize: "20px" }}
-                                ></i>
+                                <Link
+                                  to={`/dashboard/${localStorage.getItem(
+                                    "username"
+                                  )}/edit/${value._id}`}
+                                >
+                                  <i
+                                    className="fa fa-pencil"
+                                    aria-hidden="true"
+                                    style={{ color: "green", fontSize: "20px" }}
+                                  ></i>
+                                </Link>
                               </a>
                             </td>
                           </tr>
@@ -253,7 +390,7 @@ const Dashboard = () => {
             className="text-3xl font-bold text-gray-900"
             style={{ color: "#f4f4f4", fontFamily: "cursive" }}
           >
-            Upcoming Events 🎈
+            Upcomming Events 🎈
           </h1>
         </div>
       </header>
@@ -274,11 +411,14 @@ const Dashboard = () => {
                         for="order"
                         style={{ textTransform: "lowercase", color: "red" }}
                       >
-                        Sort By :
+                        Change :
                       </label>
-                      <button value="date" onClick={changeOrder}>
-                        Date
-                      </button>
+                      <input
+                        type="submit"
+                        value={isClicked === false ? "Date ASC" : "Date DESC"}
+                        onClick={sortByDate}
+                        className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-500 text-white"
+                      />
                     </th>
                     <th
                       scope="col"
@@ -298,18 +438,29 @@ const Dashboard = () => {
                     >
                       Description
                     </th>
-                    <th scope="col" className="relative px-6 py-3">
-                      <span className="sr-only">Edit</span>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider"
+                    >
+                      <i className="fa fa-info-circle" aria-hidden="true"></i>
+                      &nbsp;
+                      {initialClickedStatus === false
+                        ? "Intially Sorted In No Ordering"
+                        : isClicked === false
+                        ? "You set the order to DECENDING"
+                        : "You set the order to ACENDING"}
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredData.length === 0 ? (
+                  {filteredDataUpcomming.length === 0 ? (
                     <center>
-                      <h1 style={{ color: "red" }}>No planning to do 😒 </h1>
+                      <h1 style={{ color: "red" }}>
+                        Oops... You don't have upcomming plannings 😒{" "}
+                      </h1>
                     </center>
                   ) : (
-                    filteredData.map((value) => {
+                    filteredDataUpcomming.map((value) => {
                       const compareDate = new Date(value.plannedDate);
                       if (
                         value.resolved === false &&
@@ -334,13 +485,25 @@ const Dashboard = () => {
                         return (
                           <tr key={value._id}>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-teal-500">
+                              <div
+                                className="text-sm text-teal-600"
+                                style={{
+                                  display: "inline-flex",
+                                  justifyContent: "space-around",
+                                }}
+                              >
                                 <Link
                                   to={`/dashboard/${localStorage.getItem(
                                     "username"
                                   )}/view/${"Upcomming"}/${value._id}`}
                                 >
-                                  {value.todo} <i className="fa fa-eye" aria-hidden="true"></i>
+                                  <div>{value.todo} </div>
+                                  <div>
+                                    <i
+                                      className="fa fa-eye"
+                                      aria-hidden="true"
+                                    ></i>
+                                  </div>
                                 </Link>
                               </div>
                             </td>
@@ -353,8 +516,17 @@ const Dashboard = () => {
                               <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                 {" "}
                                 Active&nbsp;
+                                <i
+                                  className="fa fa-circle"
+                                  aria-hidden="true"
+                                  style={{ color: "red" }}
+                                ></i>
                               </span>
-                              <button onClick={() => markAsResolved(value._id)}>
+                              <button
+                                onClick={() =>
+                                  markAsResolved(value._id, "upcomming")
+                                }
+                              >
                                 <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-500 text-white">
                                   Mark as Resolved&nbsp;
                                   <i
@@ -373,10 +545,7 @@ const Dashboard = () => {
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                              <a
-                                href="#"
-                                className="text-indigo-600 hover:text-indigo-900"
-                              >
+                              <a className="text-indigo-600 hover:text-indigo-900">
                                 <i
                                   className="fa fa-trash"
                                   aria-hidden="true"
@@ -385,13 +554,21 @@ const Dashboard = () => {
                                     fontSize: "20px",
                                     marginRight: "20px",
                                   }}
-                                  onClick={() => deleteTodo(value._id)}
+                                  onClick={() =>
+                                    deleteTodo(value._id, "upcomming")
+                                  }
                                 ></i>{" "}
-                                <i
-                                  className="fa fa-pencil"
-                                  aria-hidden="true"
-                                  style={{ color: "green", fontSize: "20px" }}
-                                ></i>
+                                <Link
+                                  to={`/dashboard/${localStorage.getItem(
+                                    "username"
+                                  )}/edit/${value._id}`}
+                                >
+                                  <i
+                                    className="fa fa-pencil"
+                                    aria-hidden="true"
+                                    style={{ color: "green", fontSize: "20px" }}
+                                  ></i>
+                                </Link>
                               </a>
                             </td>
                           </tr>
@@ -405,6 +582,14 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      <center>
+        <br />
+        <span style={{ color: "white" }}>{"Copyright © "}</span>
+        <span style={{ color: "lightcoral" }}>Sahan Kumarasiri</span>
+        <span style={{ color: "white" }}>
+          {" " + new Date().getFullYear() + " . "}
+        </span>
+      </center>
     </>
   );
 };

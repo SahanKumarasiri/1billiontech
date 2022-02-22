@@ -33,23 +33,34 @@ const Home = () => {
                   </NavLink>
                 </li>
                 <li>
-                  <a href="about.html">About</a>
+                  <NavLink to={"/about"}>About</NavLink>
                 </li>
                 <li className="has-children">
-                  <a href="job-listings.html">Job Listings</a>
+                  <a href="job-listings.html">Listings</a>
                   <ul className="dropdown">
                     <li>
-                      <a href="job-single.html">Job Single</a>
+                      <a
+                        href="http://www.sahan-kumarasiri.online/"
+                        target={"_blank"}
+                      >
+                        <i class="fa fa-graduation-cap" aria-hidden="true"></i>{" "}
+                        Portfolio
+                      </a>
                     </li>
                     <li>
-                      <a href="post-job.html">Post a Job</a>
+                      <a
+                        href="https://github.com/SahanKumarasiri"
+                        target={"_blank"}
+                      >
+                        <i
+                          className="fa fa-github"
+                          aria-hidden="true"
+                          style={{ color: "black" }}
+                        ></i>{" "}
+                        Github
+                      </a>
                     </li>
                   </ul>
-                </li>
-                <li className="d-lg-none">
-                  <a href="post-job.html">
-                    <span className="mr-2">+</span> Post a Job
-                  </a>
                 </li>
                 <li className="d-lg-none">
                   <NavLink to="/login">Log In</NavLink>

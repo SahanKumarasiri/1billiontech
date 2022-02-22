@@ -3,14 +3,15 @@ import TextField from "@mui/material/TextField";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify"; //for toast messages
 import "react-toastify/dist/ReactToastify.css";
+import { useParams } from "react-router-dom";
 
 import "./Button.css";
 
-const CreateTodo = () => {
+const EditTodo = () => {
   var m_names = new Array( //get date for the database saving
     "January",
     "February",
@@ -44,23 +45,30 @@ const CreateTodo = () => {
     " : " +
     min;
 
+  const { id } = useParams();
+
   const [value, setValue] = useState(new Date());
   const [todo, setTodo] = useState("");
-  const resolved = false;
-  const dateCreated = today;
-  const dateModified = "No Mofification";
-  const email = localStorage.getItem("email");
+  const dateModified = today;
 
   const [loading, setLoading] = useState(false); //additional
 
-  var plan_date = value.getDate();
-  var plan_month = value.getMonth();
-  var plan_year = value.getFullYear();
-
-  const checkingDate = plan_date + "-" + (plan_month + 1) + "-" + plan_year;
   const [plannedDate, setPlannedDate] = useState(value);
 
-  const createTodoHandler = async (e) => {
+  useEffect(() => {
+    const getTodo = async () => {
+      await fetch(`/1billiontech/get/${id}`)
+        .then((res) => res.json())
+        .then((json) => {
+          setValue(json.plannedDate);
+          setTodo(json.todo);
+        })
+        .catch((err) => alert(err));
+    };
+    getTodo();
+  }, []);
+
+  const editTodoHandler = async (e) => {
     e.preventDefault();
 
     setLoading(true);
@@ -72,23 +80,19 @@ const CreateTodo = () => {
     };
 
     try {
-      await axios.post(
-        "/1billiontech/create",
+      await axios.put(
+        `/1billiontech/update/${id}`,
         {
           todo,
           plannedDate,
-          dateCreated,
           dateModified,
-          resolved,
-          email,
-          checkingDate,
         },
         config
       );
 
       setTimeout(() => {
         setLoading(false);
-        toast("Success! Todo Planned 😘");
+        toast("Success! Todo Updated 😘");
         setValue(new Date());
         setTodo("");
         window.location.reload();
@@ -124,12 +128,12 @@ const CreateTodo = () => {
             style={{ color: "#f4f4f4", fontFamily: "cursive" }}
           >
             Hello {localStorage.getItem("username")}{" "}
-            <span className="wave-emoji">👋</span> Create Your Todo 😍
+            <span className="wave-emoji">👋</span> Edit Your Todo 😍
           </h1>
         </div>
       </header>
       <main>
-        <form onSubmit={createTodoHandler}>
+        <form onSubmit={editTodoHandler}>
           <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
             <div className="px-4 py-6 sm:px-0">
               <div className="border-4 border-dashed border-gray-200 rounded-lg h-96">
@@ -140,8 +144,8 @@ const CreateTodo = () => {
                   <br />
                   <br />
                   <h1 style={{ color: "white", fontSize: "40px" }}>
-                    <i className="fa fa-plus" aria-hidden="true"></i> Plan Your
-                    Future
+                    <i className="fa fa-plus" aria-hidden="true"></i> Change
+                    Your Future
                   </h1>
                   <br />
 
@@ -217,7 +221,7 @@ const CreateTodo = () => {
                     <span></span>
                     <span></span>
                     <i className="fa fa-cogs" aria-hidden="true"></i>{" "}
-                    {loading ? "Planning in Progess..." : "Create"}
+                    {loading ? "Changing in Progess..." : "Edit"}
                   </button>
                   <ToastContainer style={{ marginTop: "50px" }} />
                 </center>
@@ -239,4 +243,4 @@ const CreateTodo = () => {
   );
 };
 
-export default CreateTodo;
+export default EditTodo;

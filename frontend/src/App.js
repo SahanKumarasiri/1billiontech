@@ -16,6 +16,8 @@ import Profile from "./components/Profile";
 import ResolveTodos from "./components/ResolveTodos";
 import OutdatedTodos from "./components/OutdatedTodos";
 import ViewTodo from "./components/ViewTodo";
+import EditTodo from "./components/EditTodo";
+import About from "./components/About";
 
 const App = () => {
   // The back-to-top button is hidden at the beginning
@@ -43,6 +45,7 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
@@ -101,6 +104,15 @@ const App = () => {
               <PrivateRoute>
                 <NavBar />
                 <ViewTodo />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/dashboard/:name/edit/:id"
+            element={
+              <PrivateRoute>
+                <NavBar />
+                <EditTodo />
               </PrivateRoute>
             }
           />

@@ -18,6 +18,7 @@ router.route("/create").post(async (req, res) => {
   const isAvailable = await Todos.findOne({
     todo: { $regex: new RegExp(todo, "i") },
     checkingDate: checkingDate,
+    email:email
   });
 
   if (isAvailable) {

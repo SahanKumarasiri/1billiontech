@@ -48,7 +48,7 @@ const CreateTodo = () => {
   const [todo, setTodo] = useState("");
   const resolved = false;
   const dateCreated = today;
-  const dateModified = "No Mofification";
+  const dateModified = "No Modification";
   const email = localStorage.getItem("email");
 
   const [loading, setLoading] = useState(false); //additional

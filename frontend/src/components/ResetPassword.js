@@ -8,12 +8,11 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import Logo from "./logo.png";
 
-import { Link } from "react-router-dom";
 import Copyright from "./Copyright";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
-const RandomImage = lazy(() => import("./RandomImage"));
+const RandomImage = lazy(() => import("./RandomImage")); //lazy load the component : dynamic import
 
 const theme = createTheme();
 
@@ -25,8 +24,8 @@ const ResetPassword = () => {
 
   const { resetToken } = useParams();
 
-  const resetPasswordHandler = async (e) => {
-    e.preventDefault();
+  const resetPasswordHandler = async (e) => { //handler for the reset password
+    e.preventDefault(); 
 
     const config = {
       headers: {
@@ -34,7 +33,7 @@ const ResetPassword = () => {
       },
     };
 
-    if (password !== confirmPassword) {
+    if (password !== confirmPassword) { //check the password matching
       setPassword("");
       setConfirmPassword("");
       setTimeout(() => {
@@ -64,7 +63,7 @@ const ResetPassword = () => {
   let rnewpassword = null;
 
   const onKeyUp = (e, target) => {
-    if (e.keyCode === 13) {
+    if (e.keyCode === 13) { //references for the input fields
       switch (target) {
         case "password":
           rnewpassword.focus();

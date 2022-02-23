@@ -26,8 +26,8 @@ const Register = () => {
   const [loading, setLoading] = useState(false); //additional
   const [isError, setIsError] = useState(false);
 
-  const registerHandler = async (e) => {
-    e.preventDefault();
+  const registerHandler = async (e) => { //register handler method
+    e.preventDefault(); 
 
     setLoading(true);
     setIsError(false); //additional
@@ -38,7 +38,7 @@ const Register = () => {
       },
     };
 
-    if (password !== confirmpassword) {
+    if (password !== confirmpassword) { //method for cheking the password an confirm password
       setPassword("");
       setConfirmPassword("");
       setLoading(false);
@@ -57,13 +57,13 @@ const Register = () => {
         config
       );
 
-      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("authToken", data.token); //set the data to the browswer local storage
       localStorage.setItem("email", data.email);
       localStorage.setItem("username", data.username);
 
       setTimeout(() => {
         setLoading(false);
-        history("/login");
+        history("/login"); // after 5seconds it will redirect to the login
       }, 5000); //5s
     } catch (error) {
       setError(error.response.data.error);
@@ -80,7 +80,7 @@ const Register = () => {
   let rusername = null;
   let rrepassword = null;
 
-  const onKeyUp = (e, target) => {
+  const onKeyUp = (e, target) => { //references for the input fileds
     if (e.keyCode === 13) {
       switch (target) {
         case "username":

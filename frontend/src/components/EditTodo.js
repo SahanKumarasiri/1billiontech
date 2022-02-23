@@ -55,7 +55,7 @@ const EditTodo = () => {
 
   const [plannedDate, setPlannedDate] = useState(value);
 
-  useEffect(() => {
+  useEffect(() => { //component mount
     const getTodo = async () => {
       await fetch(`/1billiontech/get/${id}`)
         .then((res) => res.json())
@@ -68,7 +68,7 @@ const EditTodo = () => {
     getTodo();
   }, []);
 
-  const editTodoHandler = async (e) => {
+  const editTodoHandler = async (e) => { //method for updating the data to the db
     e.preventDefault();
 
     setLoading(true);
@@ -90,7 +90,7 @@ const EditTodo = () => {
         config
       );
 
-      setTimeout(() => {
+      setTimeout(() => { //se a 5seconds timeout
         setLoading(false);
         toast("Success! Todo Updated 😘");
         setValue(new Date());
@@ -105,7 +105,7 @@ const EditTodo = () => {
     }
   };
 
-  const handleChange = (newValue) => {
+  const handleChange = (newValue) => { //event for date picker
     setValue(newValue);
     setPlannedDate(newValue);
   };

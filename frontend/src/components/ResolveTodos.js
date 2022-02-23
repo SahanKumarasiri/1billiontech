@@ -4,7 +4,7 @@ import axios from "axios";
 const ResolveTodos = () => {
   const [filteredDataResolved, setFilteredDataResolved] = useState([]);
 
-  useEffect(() => {
+  useEffect(() => { //component mount
     const getData = async () => {
       await axios
         .get("/1billiontech/")
@@ -34,7 +34,7 @@ const ResolveTodos = () => {
     "Saturday"
   );
 
-  const deleteTodo = async (id) => {
+  const deleteTodo = async (id) => { //method for deleting todo
     if (window.confirm("Do you want to delete !")) {
       await axios.delete(`/1billiontech/delete/${id}`);
       await axios

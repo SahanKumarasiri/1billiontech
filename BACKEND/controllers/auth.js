@@ -2,10 +2,10 @@ const User = require("../models/auth");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 
-//when we use asynchrones function we need try catch block
-exports.register = async (req, res) => {
-  const { username, email, password } = req.body; //destructure method
-
+//when we use asynchronous function we need try catch block
+exports.register = async (req, res) => {   //controller for register
+  const { username, email, password } = req.body; //destructur e method
+ 
   try {
     const user = await User.create({
       username,
@@ -26,7 +26,7 @@ exports.register = async (req, res) => {
   }
 };
 
-exports.login = async (req, res) => {
+exports.login = async (req, res) => {  //controller for login
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -37,7 +37,7 @@ exports.login = async (req, res) => {
   } //400 Bad Request
 
   try {
-    const user = await User.findOne({ email }).select("+password");
+    const user = await User.findOne({ email }).select("+password"); //match two passwords
 
     if (!user) {
       //true
@@ -65,11 +65,11 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.forgotpassword = async (req, res) => {
+exports.forgotpassword = async (req, res) => { //controller for forgot password
   const { email } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }); //check for email availability for sending emails
 
     if (!user) {
       return res
@@ -77,11 +77,11 @@ exports.forgotpassword = async (req, res) => {
         .json({ success: false, error: "Email could not be sent" });
     }
 
-    const resetToken = user.getResetPasswordToken();
+    const resetToken = user.getResetPasswordToken(); // get the password reset token
 
     await user.save();
 
-    const resetURL = `http://localhost:3000/passwordreset/${resetToken}`; //this is a frontend route
+    const resetURL = `http://localhost:3000/passwordreset/${resetToken}`; //setting a URL to send to the user for emails
 
     const message = `
         <h1>You have requested a password reset</h1>
@@ -89,7 +89,7 @@ exports.forgotpassword = async (req, res) => {
         <a href=${resetURL} clicktracking=off>${resetURL}</a>
          `;
     try {
-      await sendEmail({
+      await sendEmail({ //send email
         to: user.email,
         subject: "Password Reset Request",
         text: message,
@@ -111,16 +111,16 @@ exports.forgotpassword = async (req, res) => {
   }
 };
 
-exports.resetpassword = async (req, res) => {
+exports.resetpassword = async (req, res) => { //controller for reset password
   const resetPasswordToken = crypto
     .createHash("sha256")
     .update(req.params.resetToken)
-    .digest("hex");
+    .digest("hex"); //create a hash code using crypto
 
   try {
     const user = await User.findOne({
       resetPasswordToken,
-      resetPasswordExpire: { $gt: Date.now() },
+      resetPasswordExpire: { $gt: Date.now() },  //find and update the relavant database field
     });
 
     if (!user) {

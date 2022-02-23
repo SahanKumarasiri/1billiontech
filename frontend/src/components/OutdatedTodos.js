@@ -22,7 +22,7 @@ const OutdatedTodos = () => {
 
   const today = plan_date + "-" + (plan_month + 1) + "-" + plan_year;
 
-  useEffect(() => {
+  useEffect(() => { //component mount
     const getData = async () => {
       await axios
         .get("/1billiontech/")
@@ -51,7 +51,7 @@ const OutdatedTodos = () => {
     getData();
   });
 
-  const deleteTodo = async (id) => {
+  const deleteTodo = async (id) => { //method for delete todo
     if (window.confirm("Do you want to delete !")) {
       await axios.delete(`/1billiontech/delete/${id}`);
       await axios

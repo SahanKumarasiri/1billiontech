@@ -21,7 +21,7 @@ const ForgotPassword = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const forgotPasswordHandler = async (e) => {
+  const forgotPasswordHandler = async (e) => { //method for forgot password handling
     e.preventDefault();
 
     const config = {

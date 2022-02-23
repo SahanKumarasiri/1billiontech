@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Todo = new Schema({
+const Todo = new Schema({ //create schema for todos
   todo: {
     type: String,
   },
@@ -25,5 +25,5 @@ const Todo = new Schema({
   }
 });
 
-const newTodo = mongoose.model("todo", Todo);
+const newTodo = mongoose.model("todo", Todo); //create database collection
 module.exports = newTodo;

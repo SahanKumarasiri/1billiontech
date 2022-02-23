@@ -36,7 +36,7 @@ const Home = () => {
                   <NavLink to={"/about"}>About</NavLink>
                 </li>
                 <li className="has-children">
-                  <a href="job-listings.html">Listings</a>
+                  <a>Listings</a>
                   <ul className="dropdown">
                     <li>
                       <a

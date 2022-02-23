@@ -14,11 +14,11 @@ const NavBar = () => {
     }
   }, []); //dependency array
 
-  const logoutHandler = () => {
-    localStorage.removeItem("authToken");
+  const logoutHandler = () => { //handler for the log out
+    localStorage.removeItem("authToken"); //remove the local storage caches
     localStorage.removeItem("username");
     localStorage.removeItem("email");
-    history("/login");
+    history("/login"); // and then redirected to the login
     window.location.reload();
   };
   return (

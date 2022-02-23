@@ -13,7 +13,7 @@ import Logo from "./logo.png";
 import { Link } from "react-router-dom";
 import Copyright from "./Copyright";
 
-const RandomImage = lazy(() => import("./RandomImage"));
+const RandomImage = lazy(() => import("./RandomImage")); //lazy loading component import: dynamic import
 
 const theme = createTheme();
 
@@ -35,24 +35,24 @@ const Login = () => {
           "You are already logged in ! Are you sure you want to proceed?"
         )
       ) {
-        history(`/dashboard/${localStorage.getItem("username")}`);
+        history(`/dashboard/${localStorage.getItem("username")}`); // if true navigate to the dashboard
         window.location.reload();
       } else {
-        if (window.confirm("Do you need to signout ?")) {
+        if (window.confirm("Do you need to signout ?")) { //if true clear the brower caching and signout
           localStorage.removeItem("authToken");
           localStorage.removeItem("username");
           localStorage.removeItem("email");
           history("/login");
           alert("You are successfully signed out");
         } else {
-          history(`/dashboard/${localStorage.getItem("username")}`);
+          history(`/dashboard/${localStorage.getItem("username")}`); //else redirect to the dashboard
           window.location.reload();
         }
       }
     }
   }, []);
 
-  const loginHandler = async (e) => {
+  const loginHandler = async (e) => { //handler method for login
     e.preventDefault();
 
     setLoading(true);
@@ -71,11 +71,11 @@ const Login = () => {
         config
       );
 
-      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("authToken", data.token); //set the browser caching or local storage for globally accessed anywhere in the application
       localStorage.setItem("username", data.username);
       localStorage.setItem("email", data.email);
 
-      setTimeout(() => {
+      setTimeout(() => { // set a 5seconds timeout for authentication
         setLoading(false);
         history(`/dashboard/${data.username}`);
         window.location.reload();
@@ -92,7 +92,7 @@ const Login = () => {
     }
   };
 
-  const showPassword = () => {
+  const showPassword = () => { //show password method when check box is enabled
     var x = document.getElementById("password");
     if (x.type === "password") {
       x.type = "text";
@@ -104,8 +104,8 @@ const Login = () => {
   let refemail = null;
   let refpassword = null;
 
-  const onKeyUp = (e, target) => {
-    if (e.keyCode === 13) {
+  const onKeyUp = (e, target) => { //references for the input fields
+    if (e.keyCode === 13) { // check the key code. ENTER button is 13
       switch (target) {
         case "email":
           refpassword.focus();

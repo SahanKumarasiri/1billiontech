@@ -8,7 +8,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 export default function ViewTodo() {
-  const { type, id } = useParams();
+  const { type, id } = useParams(); //get the type and the id pass through the URL
   const [data, setData] = React.useState("");
 
   const history = useNavigate();
@@ -21,7 +21,7 @@ export default function ViewTodo() {
 
   const today = plan_date + "-" + (plan_month + 1) + "-" + plan_year;
 
-  React.useEffect(() => {
+  React.useEffect(() => { //component mount
     const getUnitTodo = async () => {
       await fetch(`/1billiontech/get/${id}`)
         .then((res) => res.json())
@@ -31,7 +31,7 @@ export default function ViewTodo() {
     getUnitTodo();
   });
 
-  const markAsResolved = async (id) => {
+  const markAsResolved = async (id) => { //method for resolved todo
     const resolved = true;
     const dateModified =
       today + " at " + date.getHours() + " : " + date.getMinutes();
@@ -49,7 +49,7 @@ export default function ViewTodo() {
     }
   };
 
-  const deleteTodo = async (id) => {
+  const deleteTodo = async (id) => { //method for deleting todo
     if (window.confirm("Do you want to delete !")) {
       await axios.delete(`/1billiontech/delete/${id}`);
       await axios
@@ -106,7 +106,8 @@ export default function ViewTodo() {
                 {localStorage.getItem("username")}{" "}
                 {type === "Today"
                   ? ", Today you have to do 👇"
-                  : ", This is your upcomming event 👇"}
+                  : ", This is your upcomming event 👇"} 
+                  {/* conditional statement */}
               </span>
             </Typography>
             <Typography gutterBottom variant="h5" component="div">

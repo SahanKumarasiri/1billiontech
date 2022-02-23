@@ -27,25 +27,25 @@ const Dashboard = () => {
 
   const today = plan_date + "-" + (plan_month + 1) + "-" + plan_year;
 
-  useEffect(() => {
+  useEffect(() => { //component mount
     const getData = async () => {
-      await axios
+      await axios //axios a promised based HTTP API
         .get("/1billiontech/")
         .then((res) => {
           setData(res.data);
           setFilteredDataToday(
             res.data.filter(
               (el) =>
-                el.email.indexOf(localStorage.getItem("email")) >= 0 &&
+                el.email.indexOf(localStorage.getItem("email")) >= 0 && // create a filter condition according to the requirement
                 el.resolved === false &&
                 el.checkingDate.indexOf(today) >= 0
             )
-          );
+          ); //set the filtered data
           setFilteredDataUpcomming(
             res.data.filter(
               (el) =>
-                el.resolved === false &&
-                el.email === localStorage.getItem("email") &&
+                el.resolved === false && // create a filter condition according to the requirement
+                el.email === localStorage.getItem("email") && //check for the browswer cache or local storage
                 today !== el.checkingDate &&
                 date.getFullYear() >= new Date(el.plannedDate).getFullYear() &&
                 !(
@@ -56,19 +56,19 @@ const Dashboard = () => {
                 date.getMonth() <= new Date(el.plannedDate).getMonth()
             )
           );
-        })
+        }) //set the filtered data
         .catch((error) => alert(error));
     };
     getData();
-  }, []);
+  }, []); //this renders only once [] dependency array
 
-  const sortByDate = () => {
+  const sortByDate = () => { //sorting method
     setInitialClickedStatus(true);
     setIsClicked(!isClicked);
     if (!isClicked) {
       setFilteredDataToday(
         data
-          .sort((a, b) => (a.plannedDate > b.plannedDate ? 1 : -1))
+          .sort((a, b) => (a.plannedDate > b.plannedDate ? 1 : -1)) //asc sort
           .filter(
             (el) =>
               el.email.indexOf(localStorage.getItem("email")) >= 0 &&
@@ -97,7 +97,7 @@ const Dashboard = () => {
     } else {
       setFilteredDataToday(
         data
-          .sort((a, b) => (b.plannedDate > a.plannedDate ? 1 : -1))
+          .sort((a, b) => (b.plannedDate > a.plannedDate ? 1 : -1)) //desc sort
           .filter(
             (el) =>
               el.email.indexOf(localStorage.getItem("email")) >= 0 &&
@@ -126,7 +126,7 @@ const Dashboard = () => {
     }
   };
 
-  const markAsResolved = async (id, type) => {
+  const markAsResolved = async (id, type) => { // method for mark the todos as resolved
     const resolved = true;
     const dateModified =
       today + " at " + date.getHours() + " : " + date.getMinutes();
@@ -151,7 +151,7 @@ const Dashboard = () => {
     }
   };
 
-  const deleteTodo = async (id, type) => {
+  const deleteTodo = async (id, type) => { //method for deleting a todo
     if (window.confirm("Do you want to delete !")) {
       await axios.delete(`/1billiontech/delete/${id}`);
       await axios
@@ -250,17 +250,17 @@ const Dashboard = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredDataToday.length === 0 ? (
+                  {filteredDataToday.length === 0 ? ( //conditional satement 
                     <center>
                       <h1 style={{ color: "red" }}>
                         Oops.. You don't have a plan today 😒{" "}
                       </h1>
                     </center>
                   ) : (
-                    filteredDataToday.map((value) => {
+                    filteredDataToday.map((value) => { //mapping
                       if (
                         value.resolved === false &&
-                        value.email === localStorage.getItem("email") &&
+                        value.email === localStorage.getItem("email") && //check again for conditions to map
                         today === value.checkingDate
                       ) {
                         const compareDate = new Date(value.plannedDate);
@@ -453,18 +453,18 @@ const Dashboard = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredDataUpcomming.length === 0 ? (
+                  {filteredDataUpcomming.length === 0 ? ( //conditional statement
                     <center>
                       <h1 style={{ color: "red" }}>
                         Oops... You don't have upcomming plannings 😒{" "}
                       </h1>
                     </center>
                   ) : (
-                    filteredDataUpcomming.map((value) => {
+                    filteredDataUpcomming.map((value) => { //mapping
                       const compareDate = new Date(value.plannedDate);
                       if (
                         value.resolved === false &&
-                        value.email === localStorage.getItem("email") &&
+                        value.email === localStorage.getItem("email") && //check by the conditions to map
                         today !== value.checkingDate &&
                         date.getFullYear() >= compareDate.getFullYear() &&
                         !(

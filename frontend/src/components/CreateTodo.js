@@ -60,19 +60,19 @@ const CreateTodo = () => {
   const checkingDate = plan_date + "-" + (plan_month + 1) + "-" + plan_year;
   const [plannedDate, setPlannedDate] = useState(value);
 
-  const createTodoHandler = async (e) => {
+  const createTodoHandler = async (e) => { // create handler for saving data to the db
     e.preventDefault();
 
-    setLoading(true);
+    setLoading(true); 
 
-    const config = {
+    const config = { //headers
       headers: {
         "Content-Type": "application/json",
       },
     };
 
     try {
-      await axios.post(
+      await axios.post( //use axios API
         "/1billiontech/create",
         {
           todo,
@@ -86,13 +86,13 @@ const CreateTodo = () => {
         config
       );
 
-      setTimeout(() => {
+      setTimeout(() => { //set a time out
         setLoading(false);
         toast("Success! Todo Planned 😘");
         setValue(new Date());
         setTodo("");
         window.location.reload();
-      }, 5000);
+      }, 5000); //5seconds timeout
     } catch (error) {
       alert(error.response.data.error);
       setValue(new Date());
@@ -101,7 +101,7 @@ const CreateTodo = () => {
     }
   };
 
-  const handleChange = (newValue) => {
+  const handleChange = (newValue) => { //handle the date picker value
     setValue(newValue);
     setPlannedDate(newValue);
   };

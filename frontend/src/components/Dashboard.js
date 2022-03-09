@@ -60,7 +60,7 @@ const Dashboard = () => {
         .catch((error) => alert(error));
     };
     getData();
-  }, []); //this renders only once [] dependency array
+  },[]); //this renders only once [] dependency array
 
   const sortByDate = () => { //sorting method
     setInitialClickedStatus(true);

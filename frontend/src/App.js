@@ -18,6 +18,7 @@ import OutdatedTodos from "./components/OutdatedTodos";
 import ViewTodo from "./components/ViewTodo";
 import EditTodo from "./components/EditTodo";
 import About from "./components/About";
+import PageNotFound from "./components/PageNotFound";
 
 const App = () => {
   // The back-to-top button is hidden at the beginning
@@ -44,6 +45,7 @@ const App = () => {
     <>
       <Router>
         <Routes>
+          <Route path="*" element={<PageNotFound />} />
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
